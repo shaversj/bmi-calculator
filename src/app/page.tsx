@@ -1,6 +1,56 @@
+"use client";
+
 import Image from "next/image";
+import { useState, useRef } from "react";
 
 export default function Home() {
+  const heightInputRef = useRef<HTMLInputElement>(null);
+  const weightInputRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const [height, setHeight] = useState<string>("");
+  const [weight, setWeight] = useState<string>("");
+  const [bmi, setBmi] = useState<number>(0);
+
+  const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHeight(e.target.value);
+  };
+
+  const handleWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setWeight(e.target.value);
+    if (height && e.target.value) {
+      setTimeout(() => {
+        e.preventDefault();
+        formRef.current?.submit();
+      }, 1000); // Delay of 1000 milliseconds (1 second)
+    }
+  };
+
+  const calculateBMI = (height: string, weight: string) => {
+    const heightNum = parseFloat(height);
+    const weightNum = parseFloat(weight);
+    if (heightNum > 0 && weightNum > 0) {
+      setBmi((weightNum / (heightNum * heightNum)) * 10000);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const height = heightInputRef.current?.value;
+    const weight = weightInputRef.current?.value;
+
+    if (height && weight) {
+      const heightNum = parseFloat(height);
+      const weightNum = parseFloat(weight);
+      if (heightNum > 0 && weightNum > 0) {
+        setBmi((weightNum / (heightNum * heightNum)) * 10000);
+        console.log("BMI: ", bmi);
+        formRef.current?.submit();
+      }
+    }
+  };
+
   return (
     <div>
       <main>
@@ -12,7 +62,42 @@ export default function Home() {
               well-being.
             </p>
           </div>
-          <div>{/*  Calculator */}</div>
+          <div>
+            {/*  Calculator */}
+            <form
+              id={"bmiForm"}
+              ref={formRef}
+              onSubmit={(e) => {
+                e.preventDefault();
+                calculateBMI(height, weight);
+              }}
+            >
+              <div>
+                <div>
+                  <label htmlFor={"metric"}>Metric</label>
+                  <input type="radio" id="metric" name="unit" />
+                </div>
+                <div>
+                  <label htmlFor={"imperial"}>Imperial</label>
+                  <input type="radio" id="imperial" name="unit" />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="height">Height (cm):</label>
+                <input type="number" id="height" name="height" ref={heightInputRef} onChange={handleHeightChange} />
+              </div>
+              <div>
+                <label htmlFor="weight">Weight (kg):</label>
+                <input type="number" id="weight" name="weight" ref={weightInputRef} onChange={handleWeightChange} />
+              </div>
+              <div>
+                {/*<h2>Welcome!</h2>*/}
+                {/*<p>Enter your height and weight and you’ll see your BMI result here</p>*/}
+                {bmi > 0 && <h2>Your BMI is: {bmi.toFixed(2)}</h2>}
+              </div>
+            </form>
+          </div>
         </div>
 
         <div>
