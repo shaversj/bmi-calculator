@@ -42,7 +42,10 @@ export default function Home() {
         <div>
           <div className={"bg-custom-gradient"}>
             <h1 className={"font-interSemibold text-heading-l lg:text-heading-xl text-gunmetal"}>Body Mass Index Calculator</h1>
-            <p className={"font-interRegular lg:text-body-m text-dark-electric-blue"}>Better understand your weight in relation to your height using our body mass index (BM) calculator. While BMI is not the sole determinant of a healthy weight, it offers a valuable starting point to evaluate your overall health and well-being.</p>
+            <p className={"font-interRegular lg:text-body-m text-dark-electric-blue"}>
+              Better understand your weight in relation to your height using our body mass index (BM) calculator. While BMI is not the sole determinant of a healthy weight, it offers a valuable starting point to evaluate your overall health and
+              well-being.
+            </p>
           </div>
           <div>
             <form className={"space-y-8 rounded-xl border border-gunmetal bg-white p-8 lg:w-[564px]"}>
@@ -65,7 +68,14 @@ export default function Home() {
                     Height
                   </label>
                   <div className={"flex w-[238px] gap-x-6 rounded-lg border border-gunmetal py-5"}>
-                    <input className={"text-heading-m font-interSemibold ml-6 w-[131px] text-gunmetal outline-none placeholder:text-dark-electric-blue"} placeholder={"0"} {...register("height", { valueAsNumber: true })} type="number" id="height" name="height" />
+                    <input
+                      className={"text-heading-m font-interSemibold ml-6 w-[131px] text-gunmetal outline-none placeholder:text-dark-electric-blue"}
+                      placeholder={"0"}
+                      {...register("height", { valueAsNumber: true })}
+                      type="number"
+                      id="height"
+                      name="height"
+                    />
                     <span className={"text-heading-m font-interSemibold text-blue"}>cm</span>
                   </div>
                 </div>
@@ -74,7 +84,14 @@ export default function Home() {
                     Weight
                   </label>
                   <div className={"flex w-[238px] gap-x-6 rounded-lg border border-gunmetal py-5"}>
-                    <input className={"text-heading-m font-interSemibold ml-6 w-[131px] text-gunmetal outline-none placeholder:text-dark-electric-blue"} placeholder={"0"} {...register("weight", { valueAsNumber: true })} type="number" id="weight" name="weight" />
+                    <input
+                      className={"text-heading-m font-interSemibold ml-6 w-[131px] text-gunmetal outline-none placeholder:text-dark-electric-blue"}
+                      placeholder={"0"}
+                      {...register("weight", { valueAsNumber: true })}
+                      type="number"
+                      id="weight"
+                      name="weight"
+                    />
                     <span className={"text-heading-m font-interSemibold text-blue"}>kg</span>
                   </div>
                 </div>
@@ -90,7 +107,10 @@ export default function Home() {
 
         <div>
           <h2>What your BMI result means</h2>
-          <p>A BMI range of 18.5 to 24.9 is considered a 'healthy weight.' Maintaining a healthy weight may lower your chances of experiencing health issues later on, such as obesity and type 2 diabetes. Aim for a nutritious diet with reduced fat and sugar content, incorporating ample fruits and vegetables. Additionally, strive for regular physical activity, ideally about 30 minutes daily for five days a week.</p>
+          <p>
+            A BMI range of 18.5 to 24.9 is considered a 'healthy weight.' Maintaining a healthy weight may lower your chances of experiencing health issues later on, such as obesity and type 2 diabetes. Aim for a nutritious diet with reduced fat and
+            sugar content, incorporating ample fruits and vegetables. Additionally, strive for regular physical activity, ideally about 30 minutes daily for five days a week.
+          </p>
         </div>
 
         <div>
