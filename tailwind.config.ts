@@ -4,10 +4,24 @@ export default {
   content: ["./src/pages/**/*.{js,ts,jsx,tsx,mdx}", "./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
+      spacing: {
+        "4.5": "1.125rem",
+      },
+      backgroundImage: {
+        "custom-gradient": "linear-gradient(290.1deg, #D6E6FE 0%, rgba(214, 252, 254, 0) 100%)",
+      },
+      borderRadius: {
+        custom: "16px 999px 999px 16px",
+      },
+      screens: {
+        sm: "375px",
+        md: "768px",
+        lg: "1440px",
+      },
       colors: {
         blue: "#345FF6",
         gunmetal: "#253347",
-        "dark-electric-blue": "#56E6E5",
+        "dark-electric-blue": "#5E6E85",
         "pure-white": "#FFFFFF",
       },
       fontSize: {

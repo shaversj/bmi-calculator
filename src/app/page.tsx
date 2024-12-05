@@ -38,36 +38,51 @@ export default function Home() {
 
   return (
     <div>
-      <main>
+      <main className={"px-6"}>
         <div>
-          <div>
-            <h1>Body Mass Index Calculator</h1>
-            <p>Better understand your weight in relation to your height using our body mass index (BM) calculator. While BMI is not the sole determinant of a healthy weight, it offers a valuable starting point to evaluate your overall health and well-being.</p>
+          <div className={"bg-custom-gradient"}>
+            <h1 className={"font-interSemibold text-heading-l lg:text-heading-xl text-gunmetal"}>Body Mass Index Calculator</h1>
+            <p className={"font-interRegular lg:text-body-m text-dark-electric-blue"}>Better understand your weight in relation to your height using our body mass index (BM) calculator. While BMI is not the sole determinant of a healthy weight, it offers a valuable starting point to evaluate your overall health and well-being.</p>
           </div>
           <div>
-            <form>
-              <div>
-                <div>
+            <form className={"space-y-8 rounded-xl border border-gunmetal bg-white p-8 lg:w-[564px]"}>
+              <p className={"font-interSemibold text-heading-m text-gunmetal"}>Enter your details below</p>
+
+              <div className={"font-interSemibold text-body-m flex text-gunmetal"}>
+                <div className={"gap-x-4.5 flex flex-row-reverse justify-end"}>
                   <label htmlFor={"metric"}>Metric</label>
                   <input type="radio" id="metric" name="unit" />
                 </div>
-                <div>
+                <div className={"gap-x-4.5 flex flex-row-reverse justify-end"}>
                   <label htmlFor={"imperial"}>Imperial</label>
                   <input type="radio" id="imperial" name="unit" />
                 </div>
               </div>
 
-              <div>
-                <label htmlFor="height">Height (cm):</label>
-                <input {...register("height", { valueAsNumber: true })} type="number" id="height" name="height" />
+              <div className={"flex gap-x-6"}>
+                <div className={"flex flex-col gap-y-2"}>
+                  <label className={"font-interRegular text-body-s text-dark-electric-blue"} htmlFor="height">
+                    Height
+                  </label>
+                  <div className={"flex w-[238px] gap-x-6 rounded-lg border border-gunmetal py-5"}>
+                    <input className={"text-heading-m font-interSemibold ml-6 w-[131px] text-gunmetal outline-none placeholder:text-dark-electric-blue"} placeholder={"0"} {...register("height", { valueAsNumber: true })} type="number" id="height" name="height" />
+                    <span className={"text-heading-m font-interSemibold text-blue"}>cm</span>
+                  </div>
+                </div>
+                <div className={"flex flex-col gap-y-2"}>
+                  <label className={"font-interRegular text-body-s text-dark-electric-blue"} htmlFor="weight">
+                    Weight
+                  </label>
+                  <div className={"flex w-[238px] gap-x-6 rounded-lg border border-gunmetal py-5"}>
+                    <input className={"text-heading-m font-interSemibold ml-6 w-[131px] text-gunmetal outline-none placeholder:text-dark-electric-blue"} placeholder={"0"} {...register("weight", { valueAsNumber: true })} type="number" id="weight" name="weight" />
+                    <span className={"text-heading-m font-interSemibold text-blue"}>kg</span>
+                  </div>
+                </div>
               </div>
-              <div>
-                <label htmlFor="weight">Weight (kg):</label>
-                <input {...register("weight", { valueAsNumber: true })} type="number" id="weight" name="weight" />
-              </div>
-              <div>
-                <h2>Welcome!</h2>
-                <p>Enter your height and weight and you’ll see your BMI result here</p>
+
+              <div className={"rounded-custom flex flex-col gap-y-4 bg-blue p-8 text-white"}>
+                <h2 className={"text-heading-m font-interSemibold"}>Welcome!</h2>
+                <p className={"text-body-s font-interRegular"}>Enter your height and weight and you’ll see your BMI result here</p>
               </div>
             </form>
           </div>
