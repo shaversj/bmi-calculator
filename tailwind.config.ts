@@ -6,6 +6,7 @@ export default {
     extend: {
       spacing: {
         "4.5": "1.125rem",
+        "11.25": "2.813rem",
       },
       backgroundImage: {
         "custom-gradient": "linear-gradient(290.1deg, #D6E6FE 0%, rgba(214, 252, 254, 0) 100%)",
@@ -27,6 +28,7 @@ export default {
       fontSize: {
         "heading-xl": ["64px", { lineHeight: "110%" }], // Inter Semibold
         "heading-l": ["48px", { lineHeight: "110%" }], // Inter Semibold
+        "heading-l-mobile": ["32px", { lineHeight: "110%" }], // Inter Semibold
         "heading-m": ["24px", { lineHeight: "110%" }], // Inter Semibold
         "heading-s": ["20px", { lineHeight: "110%" }], // Inter Semibold
         "body-m": ["16px", { lineHeight: "150%" }], // Inter Regular

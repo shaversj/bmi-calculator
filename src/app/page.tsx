@@ -36,9 +36,60 @@ export default function Home() {
     }
   }, [isValid, fieldValues]); // Trigger effect on form validity and field changes
 
+  const benefits = [
+    {
+      title: "Healthy eating",
+      description: "Healthy eating promotes weight control, disease prevention, better digestion, immunity, mental clarity, and mood.",
+      image: "/images/icon-eating.svg",
+    },
+    {
+      title: "Regular exercise",
+      description: "Exercise improves fitness, aids weight control, elevates mood, and reduces disease risk, fostering wellness and longevity.",
+      image: "/images/icon-exercise.svg",
+    },
+    {
+      title: "Adequate sleep",
+      description: "Sleep enhances mental clarity, emotional stability, and physical wellness, promoting overall restoration and rejuvenation.",
+      image: "/images/icon-sleep.svg",
+    },
+  ];
+
+  const limitations = [
+    {
+      title: "Gender",
+      description: "The development and body fat composition of girls and boys vary with age. Consequently,a child's age and gender are considered when evaluating their BMI.",
+      image: "/images/icon-gender.svg",
+      className: "col-span-full justify-self-end",
+    },
+    {
+      title: "Age",
+      description: "In aging individuals, increased body fat and muscle loss may cause BMI to underestimate body fat content.",
+      image: "/images/icon-age.svg",
+      className: "row-start-2 ",
+    },
+    {
+      title: "Muscle",
+      description: "BMI may misclassify muscular individuals as overweight or obese, as it doesn't differentiate muscle from fat.",
+      image: "/images/icon-muscle.svg",
+      className: "row-start-2 justify-self-end",
+    },
+    {
+      title: "Pregnancy",
+      description: "Expectant mothers experience weight gain due to their growing baby. Maintaining a healthy pre-pregnancy BMI is advisable to minimise health risks for both mother and child.",
+      image: "/images/icon-pregnancy.svg",
+      className: "row-start-3 ",
+    },
+    {
+      title: "Race",
+      description: "Certain health concerns may affect individuals of some Black and Asian origins at lower BMIs than others. To learn more, it is advised to discuss this with your GP or practice nurse.",
+      image: "/images/icon-race.svg",
+      className: "row-start-3 ",
+    },
+  ];
+
   return (
     <div>
-      <main className={"px-6"}>
+      <main className={""}>
         <div>
           <div className={"bg-custom-gradient"}>
             <h1 className={"font-interSemibold text-heading-l lg:text-heading-xl text-gunmetal"}>Body Mass Index Calculator</h1>
@@ -105,35 +156,50 @@ export default function Home() {
           </div>
         </div>
 
-        <div>
-          <h2>What your BMI result means</h2>
-          <p>
-            A BMI range of 18.5 to 24.9 is considered a 'healthy weight.' Maintaining a healthy weight may lower your chances of experiencing health issues later on, such as obesity and type 2 diabetes. Aim for a nutritious diet with reduced fat and
-            sugar content, incorporating ample fruits and vegetables. Additionally, strive for regular physical activity, ideally about 30 minutes daily for five days a week.
-          </p>
+        <div className={"flex gap-x-[131px] px-[140px]"}>
+          <Image src={"/images/image-man-eating.webp"} alt={"Image of Person Eating"} width={564} height={533} />
+          <div className={"space-y-8 self-end pb-[40px]"}>
+            <h2 className={"text-heading-l-mobile lg:text-heading-l font-interSemibold text-gunmetal"}>What your BMI result means</h2>
+            <p className={"text-body-m font-interRegular text-dark-electric-blue"}>
+              A BMI range of 18.5 to 24.9 is considered a 'healthy weight.' Maintaining a healthy weight may lower your chances of experiencing health issues later on, such as obesity and type 2 diabetes. Aim for a nutritious diet with reduced fat
+              and sugar content, incorporating ample fruits and vegetables. Additionally, strive for regular physical activity, ideally about 30 minutes daily for five days a week.
+            </p>
+          </div>
         </div>
 
         <div>
-          <div>
-            <Image src={"/images/icon-eating.svg"} alt={"Healthy eating"} width={64} height={64} />
-            <h3>Healthy eating</h3>
-            <p>Healthy eating promotes weight control, disease prevention, better digestion, immunity, mental clarity, and mood.</p>
-          </div>
-          <div>
-            <Image src={"/images/icon-exercise.svg"} alt={"Regular exercise"} width={64} height={64} />
-            <h3>Regular exercise</h3>
-            <p>Exercise improves fitness, aids weight control, elevates mood, and reduces disease risk, fostering wellness and longevity.</p>
-          </div>
-          <div>
-            <Image src={"/images/icon-sleep.svg"} alt={"Adequate sleep"} width={64} height={64} />
-            <h3>Adequate sleep</h3>
-            <p>Sleep enhances mental clarity, emotional stability, and physical wellness, promoting overall restoration and rejuvenation.</p>
+          <div className={"flex justify-center gap-x-8"}>
+            {benefits.map((benefit) => (
+              <div key={benefit.title} className={"space-y-[45px]"}>
+                <Image src={benefit.image} alt={benefit.title} width={64} height={64} />
+                <div className={"w-[365px] space-y-6"}>
+                  <h3 className={"text-heading-m font-interSemibold text-gunmetal"}>{benefit.title}</h3>
+                  <p className={"text-body-m font-interRegular text-dark-electric-blue"}>{benefit.description}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
         <div>
           <h4>Limitations of BMI</h4>
           <p>Although BMI is often a practical indicator of healthy weight, it is not suited for every person. Specific groups should carefully consider their BMI outcomes, and in certain cases, the measurement may not be beneficial to use.</p>
+        </div>
+
+        <div>
+          <div className={"grid w-[961px] grid-cols-2 grid-rows-3 gap-x-8 gap-y-8 border border-red-500"}>
+            {limitations.map((limitation) => (
+              <div key={limitation.title} className={`w-[365px] border border-black p-8 ${limitation.className}`}>
+                <div className={"space-y-5"}>
+                  <div className={"flex items-center gap-x-4"}>
+                    <Image src={limitation.image} alt={limitation.title} width={32} height={32} />
+                    <h3 className={"text-heading-s font-interSemibold text-gunmetal"}>{limitation.title}</h3>
+                  </div>
+                  <p className={"text-body-m font-interRegular text-dark-electric-blue"}>{limitation.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </main>
     </div>
