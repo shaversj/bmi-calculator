@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import LimitationCard from "@/app/components/LimitationCard";
 
 const schema = z.object({
   height: z.number().min(1, "Height is required").gt(0),
@@ -59,19 +60,19 @@ export default function Home() {
       title: "Gender",
       description: "The development and body fat composition of girls and boys vary with age. Consequently,a child's age and gender are considered when evaluating their BMI.",
       image: "/images/icon-gender.svg",
-      className: "col-span-full justify-self-end",
+      className: "",
     },
     {
       title: "Age",
       description: "In aging individuals, increased body fat and muscle loss may cause BMI to underestimate body fat content.",
       image: "/images/icon-age.svg",
-      className: "row-start-2 ",
+      className: "row-start-2 row-end-2",
     },
     {
       title: "Muscle",
       description: "BMI may misclassify muscular individuals as overweight or obese, as it doesn't differentiate muscle from fat.",
       image: "/images/icon-muscle.svg",
-      className: "row-start-2 justify-self-end",
+      className: "row-start-2 row-end-2",
     },
     {
       title: "Pregnancy",
@@ -181,24 +182,26 @@ export default function Home() {
           </div>
         </div>
 
-        <div>
-          <h4>Limitations of BMI</h4>
-          <p>Although BMI is often a practical indicator of healthy weight, it is not suited for every person. Specific groups should carefully consider their BMI outcomes, and in certain cases, the measurement may not be beneficial to use.</p>
-        </div>
+        <div className={"flex lg:pl-[140px]"}>
+          <div className={"w-[564px] space-y-[35px]"}>
+            <h4 className={"text-heading-l font-interSemibold text-gunmetal"}>Limitations of BMI</h4>
+            <p className={"text-body-m font-interRegular text-dark-electric-blue"}>
+              Although BMI is often a practical indicator of healthy weight, it is not suited for every person. Specific groups should carefully consider their BMI outcomes, and in certain cases, the measurement may not be beneficial to use.
+            </p>
+          </div>
 
-        <div>
-          <div className={"grid w-[961px] grid-cols-2 grid-rows-3 gap-x-8 gap-y-8 border border-red-500"}>
-            {limitations.map((limitation) => (
-              <div key={limitation.title} className={`w-[365px] border border-black p-8 ${limitation.className}`}>
-                <div className={"space-y-5"}>
-                  <div className={"flex items-center gap-x-4"}>
-                    <Image src={limitation.image} alt={limitation.title} width={32} height={32} />
-                    <h3 className={"text-heading-s font-interSemibold text-gunmetal"}>{limitation.title}</h3>
-                  </div>
-                  <p className={"text-body-m font-interRegular text-dark-electric-blue"}>{limitation.description}</p>
-                </div>
+          <div className={"absolute lg:ml-[339px]"}>
+            <div className={"w-[961px] space-y-6"}>
+              <LimitationCard title={limitations[0].title} description={limitations[0].description} image={limitations[0].image} className={"ml-auto mr-[99px]"} />
+              <div className={"flex justify-end gap-x-8"}>
+                <LimitationCard title={limitations[1].title} description={limitations[1].description} image={limitations[1].image} className={"row-start-2 row-end-2"} />
+                <LimitationCard title={limitations[2].title} description={limitations[2].description} image={limitations[2].image} className={"row-start-2 row-end-2"} />
               </div>
-            ))}
+              <div className={"flex gap-x-8"}>
+                <LimitationCard title={limitations[3].title} description={limitations[3].description} image={limitations[3].image} className={"row-start-3"} />
+                <LimitationCard title={limitations[4].title} description={limitations[4].description} image={limitations[4].image} className={"row-start-3"} />
+              </div>
+            </div>
           </div>
         </div>
       </main>
