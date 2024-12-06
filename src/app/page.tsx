@@ -91,10 +91,10 @@ export default function Home() {
   return (
     <div>
       <main className={""}>
-        <div>
-          <div className={"bg-custom-gradient"}>
-            <h1 className={"font-interSemibold text-heading-l lg:text-heading-xl text-gunmetal"}>Body Mass Index Calculator</h1>
-            <p className={"font-interRegular lg:text-body-m text-dark-electric-blue"}>
+        <div className={"flex w-[1276px] gap-x-8 pb-[107px] pl-[116px] pt-[182px]"}>
+          <div className={"w-[564px] space-y-[30px] self-center"}>
+            <h1 className={"font-interSemibold text-heading-l lg:text-heading-xl w-[520px] text-gunmetal"}>Body Mass Index Calculator</h1>
+            <p className={"font-interRegular lg:text-body-m w-[465px] text-dark-electric-blue"}>
               Better understand your weight in relation to your height using our body mass index (BM) calculator. While BMI is not the sole determinant of a healthy weight, it offers a valuable starting point to evaluate your overall health and
               well-being.
             </p>
@@ -157,7 +157,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className={"flex gap-x-[131px] px-[140px]"}>
+        <div className={"flex gap-x-[131px] px-[116px]"}>
           <Image src={"/images/image-man-eating.webp"} alt={"Image of Person Eating"} width={564} height={533} />
           <div className={"space-y-8 self-end pb-[40px]"}>
             <h2 className={"text-heading-l-mobile lg:text-heading-l font-interSemibold text-gunmetal"}>What your BMI result means</h2>
@@ -168,8 +168,8 @@ export default function Home() {
           </div>
         </div>
 
-        <div>
-          <div className={"flex justify-center gap-x-8"}>
+        <div className={"mt-[92px] bg-red-200 px-[116px] pb-[96px] pt-[96px]"}>
+          <div className={"flex gap-x-8"}>
             {benefits.map((benefit) => (
               <div key={benefit.title} className={"space-y-[45px]"}>
                 <Image src={benefit.image} alt={benefit.title} width={64} height={64} />
@@ -182,7 +182,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className={"flex lg:pl-[140px]"}>
+        <div className={"mt-[102px] flex lg:pl-[116px]"}>
           <div className={"w-[564px] space-y-[35px]"}>
             <h4 className={"text-heading-l font-interSemibold text-gunmetal"}>Limitations of BMI</h4>
             <p className={"text-body-m font-interRegular text-dark-electric-blue"}>
@@ -190,7 +190,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className={"absolute lg:ml-[339px]"}>
+          <div className={"absolute lg:ml-[315px]"}>
             <div className={"w-[961px] space-y-6"}>
               <LimitationCard title={limitations[0].title} description={limitations[0].description} image={limitations[0].image} className={"ml-auto mr-[99px]"} />
               <div className={"flex justify-end gap-x-8"}>
