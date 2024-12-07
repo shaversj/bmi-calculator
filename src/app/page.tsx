@@ -98,6 +98,21 @@ export default function Home() {
       label: "Imperial",
     },
   ];
+
+  const inputMetadata = [
+    {
+      id: "height",
+      label: "Height",
+      placeholder: "0",
+      unit: "cm",
+    },
+    {
+      id: "weight",
+      label: "Weight",
+      placeholder: "0",
+      unit: "kg",
+    },
+  ];
   return (
     <div>
       <main className={""}>
@@ -125,38 +140,24 @@ export default function Home() {
               </div>
 
               <div className={"flex gap-x-6"}>
-                <div className={"flex flex-col gap-y-2"}>
-                  <label className={"font-interRegular text-body-s text-dark-electric-blue"} htmlFor="height">
-                    Height
-                  </label>
-                  <div className={"flex w-[238px] gap-x-6 rounded-lg border border-gunmetal py-5"}>
-                    <input
-                      className={"ml-6 w-[131px] font-interSemibold text-heading-m text-gunmetal outline-none placeholder:text-dark-electric-blue"}
-                      placeholder={"0"}
-                      {...register("height", { valueAsNumber: true })}
-                      type="number"
-                      id="height"
-                      name="height"
-                    />
-                    <span className={"font-interSemibold text-heading-m text-blue"}>cm</span>
+                {inputMetadata.map((input) => (
+                  <div key={input.id} className={"flex w-full flex-col gap-y-2"}>
+                    <label className={"font-interRegular text-body-s text-dark-electric-blue"} htmlFor={input.id}>
+                      {input.label}
+                    </label>
+                    <div className={"flex gap-x-6 rounded-lg border border-gunmetal py-5"}>
+                      <input
+                        className={"ml-6 w-[131px] font-interSemibold text-heading-m text-gunmetal outline-none placeholder:text-dark-electric-blue"}
+                        placeholder={input.placeholder}
+                        {...register(input.id, { valueAsNumber: true })}
+                        type="number"
+                        id={input.id}
+                        name={input.id}
+                      />
+                      <span className={"font-interSemibold text-heading-m text-blue"}>{input.unit}</span>
+                    </div>
                   </div>
-                </div>
-                <div className={"flex flex-col gap-y-2"}>
-                  <label className={"font-interRegular text-body-s text-dark-electric-blue"} htmlFor="weight">
-                    Weight
-                  </label>
-                  <div className={"flex w-[238px] gap-x-6 rounded-lg border border-gunmetal py-5"}>
-                    <input
-                      className={"ml-6 w-[131px] font-interSemibold text-heading-m text-gunmetal outline-none placeholder:text-dark-electric-blue"}
-                      placeholder={"0"}
-                      {...register("weight", { valueAsNumber: true })}
-                      type="number"
-                      id="weight"
-                      name="weight"
-                    />
-                    <span className={"font-interSemibold text-heading-m text-blue"}>kg</span>
-                  </div>
-                </div>
+                ))}
               </div>
 
               <div className={"flex flex-col gap-y-4 rounded-custom bg-blue p-8 text-white"}>
