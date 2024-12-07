@@ -88,13 +88,23 @@ export default function Home() {
     },
   ];
 
+  const radioMetadata = [
+    {
+      id: "metric",
+      label: "Metric",
+    },
+    {
+      id: "imperial",
+      label: "Imperial",
+    },
+  ];
   return (
     <div>
       <main className={""}>
         <div className={"flex w-[1276px] gap-x-8 pb-[107px] pl-[116px] pt-[182px]"}>
           <div className={"w-[564px] space-y-[30px] self-center"}>
-            <h1 className={"font-interSemibold text-heading-l lg:text-heading-xl w-[520px] text-gunmetal"}>Body Mass Index Calculator</h1>
-            <p className={"font-interRegular lg:text-body-m w-[465px] text-dark-electric-blue"}>
+            <h1 className={"w-[520px] font-interSemibold text-heading-l text-gunmetal lg:text-heading-xl"}>Body Mass Index Calculator</h1>
+            <p className={"w-[465px] font-interRegular text-dark-electric-blue lg:text-body-m"}>
               Better understand your weight in relation to your height using our body mass index (BM) calculator. While BMI is not the sole determinant of a healthy weight, it offers a valuable starting point to evaluate your overall health and
               well-being.
             </p>
@@ -102,16 +112,16 @@ export default function Home() {
           <div>
             <form className={"space-y-8 rounded-xl border border-gunmetal bg-white p-8 lg:w-[564px]"}>
               <p className={"font-interSemibold text-heading-m text-gunmetal"}>Enter your details below</p>
-
-              <div className={"font-interSemibold text-body-m flex text-gunmetal"}>
-                <div className={"gap-x-4.5 flex flex-row-reverse justify-end"}>
-                  <label htmlFor={"metric"}>Metric</label>
-                  <input type="radio" id="metric" name="unit" />
-                </div>
-                <div className={"gap-x-4.5 flex flex-row-reverse justify-end"}>
-                  <label htmlFor={"imperial"}>Imperial</label>
-                  <input type="radio" id="imperial" name="unit" />
-                </div>
+              <div className={"flex gap-x-6 font-interSemibold text-body-m text-gunmetal"}>
+                {radioMetadata.map((radio) => (
+                  <div key={radio.id} className={"flex w-full items-center gap-x-4.5"}>
+                    <div className={"grid place-items-center"}>
+                      <input type="radio" id={radio.id} name="unit" className={"peer col-start-1 row-start-1 size-[31px] appearance-none rounded-full border border-dark-electric-blue checked:bg-[#345FF6] checked:opacity-15"} />
+                      <div className={"pointer-events-none col-start-1 row-start-1 size-[15px] rounded-full peer-checked:bg-blue"} />
+                    </div>
+                    <label htmlFor={radio.id}>{radio.label}</label>
+                  </div>
+                ))}
               </div>
 
               <div className={"flex gap-x-6"}>
@@ -121,14 +131,14 @@ export default function Home() {
                   </label>
                   <div className={"flex w-[238px] gap-x-6 rounded-lg border border-gunmetal py-5"}>
                     <input
-                      className={"text-heading-m font-interSemibold ml-6 w-[131px] text-gunmetal outline-none placeholder:text-dark-electric-blue"}
+                      className={"ml-6 w-[131px] font-interSemibold text-heading-m text-gunmetal outline-none placeholder:text-dark-electric-blue"}
                       placeholder={"0"}
                       {...register("height", { valueAsNumber: true })}
                       type="number"
                       id="height"
                       name="height"
                     />
-                    <span className={"text-heading-m font-interSemibold text-blue"}>cm</span>
+                    <span className={"font-interSemibold text-heading-m text-blue"}>cm</span>
                   </div>
                 </div>
                 <div className={"flex flex-col gap-y-2"}>
@@ -137,21 +147,21 @@ export default function Home() {
                   </label>
                   <div className={"flex w-[238px] gap-x-6 rounded-lg border border-gunmetal py-5"}>
                     <input
-                      className={"text-heading-m font-interSemibold ml-6 w-[131px] text-gunmetal outline-none placeholder:text-dark-electric-blue"}
+                      className={"ml-6 w-[131px] font-interSemibold text-heading-m text-gunmetal outline-none placeholder:text-dark-electric-blue"}
                       placeholder={"0"}
                       {...register("weight", { valueAsNumber: true })}
                       type="number"
                       id="weight"
                       name="weight"
                     />
-                    <span className={"text-heading-m font-interSemibold text-blue"}>kg</span>
+                    <span className={"font-interSemibold text-heading-m text-blue"}>kg</span>
                   </div>
                 </div>
               </div>
 
-              <div className={"rounded-custom flex flex-col gap-y-4 bg-blue p-8 text-white"}>
-                <h2 className={"text-heading-m font-interSemibold"}>Welcome!</h2>
-                <p className={"text-body-s font-interRegular"}>Enter your height and weight and you’ll see your BMI result here</p>
+              <div className={"flex flex-col gap-y-4 rounded-custom bg-blue p-8 text-white"}>
+                <h2 className={"font-interSemibold text-heading-m"}>Welcome!</h2>
+                <p className={"font-interRegular text-body-s"}>Enter your height and weight and you’ll see your BMI result here</p>
               </div>
             </form>
           </div>
@@ -160,8 +170,8 @@ export default function Home() {
         <div className={"flex gap-x-[131px] px-[116px]"}>
           <Image src={"/images/image-man-eating.webp"} alt={"Image of Person Eating"} width={564} height={533} />
           <div className={"space-y-8 self-end pb-[40px]"}>
-            <h2 className={"text-heading-l-mobile lg:text-heading-l font-interSemibold text-gunmetal"}>What your BMI result means</h2>
-            <p className={"text-body-m font-interRegular text-dark-electric-blue"}>
+            <h2 className={"font-interSemibold text-heading-l-mobile text-gunmetal lg:text-heading-l"}>What your BMI result means</h2>
+            <p className={"font-interRegular text-body-m text-dark-electric-blue"}>
               A BMI range of 18.5 to 24.9 is considered a 'healthy weight.' Maintaining a healthy weight may lower your chances of experiencing health issues later on, such as obesity and type 2 diabetes. Aim for a nutritious diet with reduced fat
               and sugar content, incorporating ample fruits and vegetables. Additionally, strive for regular physical activity, ideally about 30 minutes daily for five days a week.
             </p>
@@ -174,8 +184,8 @@ export default function Home() {
               <div key={benefit.title} className={"space-y-[45px]"}>
                 <Image src={benefit.image} alt={benefit.title} width={64} height={64} />
                 <div className={"w-[365px] space-y-6"}>
-                  <h3 className={"text-heading-m font-interSemibold text-gunmetal"}>{benefit.title}</h3>
-                  <p className={"text-body-m font-interRegular text-dark-electric-blue"}>{benefit.description}</p>
+                  <h3 className={"font-interSemibold text-heading-m text-gunmetal"}>{benefit.title}</h3>
+                  <p className={"font-interRegular text-body-m text-dark-electric-blue"}>{benefit.description}</p>
                 </div>
               </div>
             ))}
@@ -184,8 +194,8 @@ export default function Home() {
 
         <div className={"mt-[102px] flex lg:pl-[116px]"}>
           <div className={"w-[564px] space-y-[35px]"}>
-            <h4 className={"text-heading-l font-interSemibold text-gunmetal"}>Limitations of BMI</h4>
-            <p className={"text-body-m font-interRegular text-dark-electric-blue"}>
+            <h4 className={"font-interSemibold text-heading-l text-gunmetal"}>Limitations of BMI</h4>
+            <p className={"font-interRegular text-body-m text-dark-electric-blue"}>
               Although BMI is often a practical indicator of healthy weight, it is not suited for every person. Specific groups should carefully consider their BMI outcomes, and in certain cases, the measurement may not be beneficial to use.
             </p>
           </div>
