@@ -1,16 +1,49 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import LimitationCard from "@/app/components/LimitationCard";
 
-const schema = z.object({
-  height: z.number().min(1, "Height is required").gt(0),
-  weight: z.number().min(1, "Weight is required").gt(0),
-});
+const schema = z
+  .object({
+    unit: z.enum(["metric", "imperial"]),
+    metricGroup: z
+      .object({
+        height: z.number().min(1, "Height is required").positive().optional(),
+        weight: z.number().min(1, "Weight is required").positive().optional(),
+      })
+      .optional(),
+    imperialGroup: z
+      .object({
+        feet: z.number().min(0, "Feet is required").nonnegative().optional(),
+        inches: z.number().min(0, "Inches is required").nonnegative().optional(),
+        stone: z.number().min(0, "Stone is required").nonnegative().optional(),
+        pounds: z.number().min(0, "Pounds is required").nonnegative().optional(),
+      })
+      .optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.unit === "metric") {
+      if (!data.metricGroup || !data.metricGroup.height || !data.metricGroup.weight) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["metricGroup"],
+          message: "Height and Weight are required for metric units.",
+        });
+      }
+    } else if (data.unit === "imperial") {
+      if (!data.imperialGroup || (!data.imperialGroup.feet && !data.imperialGroup.inches) || (!data.imperialGroup.stone && !data.imperialGroup.pounds)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["imperialGroup"],
+          message: "Feet/Inches or Stone/Pounds are required for imperial units.",
+        });
+      }
+    }
+  });
 
 export default function Home() {
   const {
@@ -18,20 +51,54 @@ export default function Home() {
     control,
     handleSubmit,
     formState: { isValid },
-  } = useForm({ resolver: zodResolver(schema) });
+  } = useForm({ resolver: zodResolver(schema), defaultValues: { unit: "metric", metricGroup: { height: undefined, weight: undefined }, imperialGroup: { feet: undefined, inches: undefined, stone: undefined, pounds: undefined } } });
 
+  const bleh = {
+    defaultValues: { metricGroup: { height: 0, weight: 0 }, imperialGroup: { feet: 0, inches: 0, stone: 0, pounds: 0 } },
+  };
+  const [bmi, setBmi] = useState(0);
+  const [minWeight, setMinWeight] = useState(0);
+  const [maxWeight, setMaxWeight] = useState(0);
+  const [selectedUnit, setSelectedUnit] = useState<"metric" | "imperial">("metric");
   const onSubmit = (data: any) => {
-    const { height, weight } = data;
+    const heightInInches = data.imperialGroup.feet * 12 + data.imperialGroup.inches;
+    const weightInPounds = data.imperialGroup.stone * 14 + data.imperialGroup.pounds;
+
+    const bmi = data.unit === "metric" ? calculateBMI(data.metricGroup.weight, data.metricGroup.height) : calculateBMI(weightInPounds, heightInInches);
+    const [minWeight, maxWeight] = data.unit === "metric" ? calculateIdealWeight(data.metricGroup.weight, data.metricGroup.height) : calculateIdealWeight(weightInPounds, heightInInches);
+
+    setBmi(bmi);
+    setMinWeight(Math.round(minWeight * 10) / 10);
+    setMaxWeight(Math.round(maxWeight * 10) / 10);
+  };
+
+  const calculateBMI = (weight: number, height: number) => {
     const bmi = (weight / (height * height)) * 10000;
-    console.log("BMI: ", bmi);
+    // format 1 decimal place
+    return Math.round((bmi * 10) / 10);
+  };
+
+  const calculateIdealWeight = (weight: number, height: number) => {
+    const minWeight = (18.5 * (height * height)) / 10000;
+    const maxWeight = (24.9 * (height * height)) / 10000;
+    //convert to kilograms
+
+    return [minWeight, maxWeight];
   };
 
   const fieldValues = useWatch({
     control: control,
-    name: ["height", "weight"], // Watch multiple fields
+    name: ["unit", "metricGroup.height", "metricGroup.weight", "imperialGroup.feet", "imperialGroup.inches", "imperialGroup.stone", "imperialGroup.pounds"],
   });
 
   useEffect(() => {
+    const [unit, height, weight, feet, inches, stone, pounds] = fieldValues;
+    if (unit === "metric") {
+      setSelectedUnit("metric");
+    } else if (unit === "imperial") {
+      setSelectedUnit("imperial");
+    }
+
     if (isValid) {
       handleSubmit(onSubmit)();
     }
@@ -40,7 +107,7 @@ export default function Home() {
   const benefits = [
     {
       title: "Healthy eating",
-      description: "Healthy eating promotes weight control, disease prevention, better digestion, immunity, mental clarity, and mood.",
+      description: "Healthy eating promotes weight control, disease prevention, better digestion, immunity , mental clarity, and mood.",
       image: "/images/icon-eating.svg",
     },
     {
@@ -99,20 +166,47 @@ export default function Home() {
     },
   ];
 
-  const inputMetadata = [
-    {
-      id: "height",
-      label: "Height",
-      placeholder: "0",
-      unit: "cm",
-    },
-    {
-      id: "weight",
-      label: "Weight",
-      placeholder: "0",
-      unit: "kg",
-    },
-  ];
+  const inputMetadata = {
+    metric: [
+      {
+        id: "metricGroup.height",
+        label: "Height",
+        unit: "cm",
+      },
+      {
+        id: "metricGroup.weight",
+        label: "Weight",
+        unit: "kg",
+      },
+    ],
+    imperial: [
+      [
+        {
+          id: "imperialGroup.feet",
+          label: "Feet",
+          unit: "ft",
+        },
+        {
+          id: "imperialGroup.inches",
+          label: "Inches",
+          unit: "in",
+        },
+      ],
+      [
+        {
+          id: "imperialGroup.stone",
+          label: "Stone",
+          unit: "st",
+        },
+        {
+          id: "imperialGroup.pounds",
+          label: "Pounds",
+          unit: "lbs",
+        },
+      ],
+    ],
+  };
+
   return (
     <div>
       <main className={""}>
@@ -131,7 +225,15 @@ export default function Home() {
                 {radioMetadata.map((radio) => (
                   <div key={radio.id} className={"flex w-full items-center gap-x-4.5"}>
                     <div className={"grid place-items-center"}>
-                      <input type="radio" id={radio.id} name="unit" className={"peer col-start-1 row-start-1 size-[31px] appearance-none rounded-full border border-dark-electric-blue checked:bg-[#345FF6] checked:opacity-15"} />
+                      <input
+                        {...register("unit")}
+                        checked={selectedUnit === undefined ? false : selectedUnit === radio.id}
+                        type="radio"
+                        id={radio.id}
+                        name="unit"
+                        value={radio.id}
+                        className={"peer col-start-1 row-start-1 size-[31px] appearance-none rounded-full border border-dark-electric-blue checked:bg-[#345FF6] checked:opacity-15"}
+                      />
                       <div className={"pointer-events-none col-start-1 row-start-1 size-[15px] rounded-full peer-checked:bg-blue"} />
                     </div>
                     <label htmlFor={radio.id}>{radio.label}</label>
@@ -139,30 +241,97 @@ export default function Home() {
                 ))}
               </div>
 
-              <div className={"flex gap-x-6"}>
-                {inputMetadata.map((input) => (
-                  <div key={input.id} className={"flex w-full flex-col gap-y-2"}>
-                    <label className={"font-interRegular text-body-s text-dark-electric-blue"} htmlFor={input.id}>
-                      {input.label}
-                    </label>
-                    <div className={"flex gap-x-6 rounded-lg border border-gunmetal py-5"}>
-                      <input
-                        className={"ml-6 w-[131px] font-interSemibold text-heading-m text-gunmetal outline-none placeholder:text-dark-electric-blue"}
-                        placeholder={input.placeholder}
-                        {...register(input.id, { valueAsNumber: true })}
-                        type="number"
-                        id={input.id}
-                        name={input.id}
-                      />
-                      <span className={"font-interSemibold text-heading-m text-blue"}>{input.unit}</span>
-                    </div>
+              <></>
+              {selectedUnit === "metric" ? (
+                <>
+                  <div className={"flex gap-x-6"}>
+                    {inputMetadata.metric.map((input) => (
+                      <div key={input.id} className={"flex w-full flex-col gap-y-2"}>
+                        <label className={"font-interRegular text-body-s text-dark-electric-blue"} htmlFor={input.id}>
+                          {input.label}
+                        </label>
+                        <div className={"flex gap-x-6 rounded-lg border border-gunmetal px-6 py-5"}>
+                          <input
+                            className={"container font-interSemibold text-heading-m text-gunmetal outline-none placeholder:text-dark-electric-blue"}
+                            placeholder={"0" as string}
+                            {...register(input.id, { valueAsNumber: true })}
+                            type="number"
+                            id={input.id}
+                            name={input.id}
+                          />
+                          <span className={"font-interSemibold text-heading-m text-blue"}>{input.unit}</span>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </>
+              ) : (
+                <>
+                  <div className={"flex gap-x-6"}>
+                    {inputMetadata.imperial[0].map((input) => (
+                      <div key={input.id} className={"flex w-full flex-col gap-y-2"}>
+                        <label className={"font-interRegular text-body-s text-dark-electric-blue"} htmlFor={input.id}>
+                          {input.label}
+                        </label>
+                        <div className={"flex gap-x-6 rounded-lg border border-gunmetal px-6 py-5"}>
+                          <input
+                            className={"container font-interSemibold text-heading-m text-gunmetal outline-none placeholder:text-dark-electric-blue"}
+                            placeholder={"0" as string}
+                            {...register(input.id, { valueAsNumber: true })}
+                            type="number"
+                            id={input.id}
+                            name={input.id}
+                          />
+                          <span className={"font-interSemibold text-heading-m text-blue"}>{input.unit}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className={"flex gap-x-6"}>
+                    {inputMetadata.imperial[1].map((input) => (
+                      <div key={input.id} className={"flex w-full flex-col gap-y-2"}>
+                        <label className={"font-interRegular text-body-s text-dark-electric-blue"} htmlFor={input.id}>
+                          {input.label}
+                        </label>
+                        <div className={"flex gap-x-6 rounded-lg border border-gunmetal px-6 py-5"}>
+                          <input
+                            className={"container font-interSemibold text-heading-m text-gunmetal outline-none placeholder:text-dark-electric-blue"}
+                            placeholder={"0" as string}
+                            {...register(input.id, { valueAsNumber: true })}
+                            type="number"
+                            id={input.id}
+                            name={input.id}
+                          />
+                          <span className={"font-interSemibold text-heading-m text-blue"}>{input.unit}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
 
               <div className={"flex flex-col gap-y-4 rounded-custom bg-blue p-8 text-white"}>
-                <h2 className={"font-interSemibold text-heading-m"}>Welcome!</h2>
-                <p className={"font-interRegular text-body-s"}>Enter your height and weight and you’ll see your BMI result here</p>
+                {isValid ? (
+                  <div className={"flex items-center gap-x-6"}>
+                    <div className={"w-full"}>
+                      <p className={"font-interSemibold text-body-m"}>Your BMI is...</p>
+                      <h2 className={"font-interSemibold text-heading-xl"}>{bmi}</h2>
+                    </div>
+                    <p className={"w-full font-interRegular text-body-s"}>
+                      Your BMI suggests you’re a healthy weight. Your ideal weight is between{" "}
+                      <span className={"font-interSemibold"}>
+                        {minWeight}
+                        {selectedUnit === "metric" ? "kgs" : "lbs"} - {maxWeight}
+                        {selectedUnit === "metric" ? "kgs" : "lbs"}.
+                      </span>
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <h2 className={"font-interSemibold text-heading-m"}>Welcome!</h2>
+                    <p className={"font-interRegular text-body-s"}>Enter your height and weight and you’ll see your BMI result here</p>
+                  </>
+                )}
               </div>
             </form>
           </div>
