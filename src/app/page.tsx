@@ -12,16 +12,16 @@ const schema = z
     unit: z.enum(["metric", "imperial"]),
     metricGroup: z
       .object({
-        height: z.number().min(1, "Height is required").positive().optional(),
-        weight: z.number().min(1, "Weight is required").positive().optional(),
+        height: z.number().min(1).positive().or(z.nan()).optional(),
+        weight: z.number().min(1).positive().or(z.nan()).optional(),
       })
       .optional(),
     imperialGroup: z
       .object({
-        feet: z.number().min(0, "Feet is required").nonnegative().optional(),
-        inches: z.number().min(0, "Inches is required").nonnegative().optional(),
-        stone: z.number().min(0, "Stone is required").nonnegative().optional(),
-        pounds: z.number().min(0, "Pounds is required").nonnegative().optional(),
+        feet: z.number().min(1).positive().or(z.nan()).optional(),
+        inches: z.number().min(1).positive().or(z.nan()).optional(),
+        stone: z.number().min(1).positive().or(z.nan()).optional(),
+        pounds: z.number().min(1).positive().or(z.nan()).optional(),
       })
       .optional(),
   })
@@ -35,6 +35,7 @@ const schema = z
         });
       }
     } else if (data.unit === "imperial") {
+      console.log("imperial soldier");
       if (!data.imperialGroup || (!data.imperialGroup.feet && !data.imperialGroup.inches) || (!data.imperialGroup.stone && !data.imperialGroup.pounds)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -53,18 +54,16 @@ export default function Home() {
     formState: { isValid },
   } = useForm({ resolver: zodResolver(schema), defaultValues: { unit: "metric", metricGroup: { height: undefined, weight: undefined }, imperialGroup: { feet: undefined, inches: undefined, stone: undefined, pounds: undefined } } });
 
-  const bleh = {
-    defaultValues: { metricGroup: { height: 0, weight: 0 }, imperialGroup: { feet: 0, inches: 0, stone: 0, pounds: 0 } },
-  };
   const [bmi, setBmi] = useState(0);
   const [minWeight, setMinWeight] = useState(0);
   const [maxWeight, setMaxWeight] = useState(0);
-  const [selectedUnit, setSelectedUnit] = useState<"metric" | "imperial">("metric");
+  const [selectedUnit, setSelectedUnit] = useState<"metric" | "imperial" | undefined>(undefined);
+
   const onSubmit = (data: any) => {
     const heightInInches = data.imperialGroup.feet * 12 + data.imperialGroup.inches;
     const weightInPounds = data.imperialGroup.stone * 14 + data.imperialGroup.pounds;
 
-    const bmi = data.unit === "metric" ? calculateBMI(data.metricGroup.weight, data.metricGroup.height) : calculateBMI(weightInPounds, heightInInches);
+    const bmi = data.unit === "metric" ? calculateBMI(data.metricGroup.weight, data.metricGroup.height) : calculateImperialBMI(weightInPounds, heightInInches);
     const [minWeight, maxWeight] = data.unit === "metric" ? calculateIdealWeight(data.metricGroup.weight, data.metricGroup.height) : calculateIdealWeight(weightInPounds, heightInInches);
 
     setBmi(bmi);
@@ -72,17 +71,19 @@ export default function Home() {
     setMaxWeight(Math.round(maxWeight * 10) / 10);
   };
 
+  const calculateImperialBMI = (weight: number, height: number) => {
+    const bmi = (weight * 703) / (height * height);
+    return parseFloat(bmi.toFixed(1));
+  };
+
   const calculateBMI = (weight: number, height: number) => {
     const bmi = (weight / (height * height)) * 10000;
-    // format 1 decimal place
-    return Math.round((bmi * 10) / 10);
+    return parseFloat(bmi.toFixed(1));
   };
 
   const calculateIdealWeight = (weight: number, height: number) => {
     const minWeight = (18.5 * (height * height)) / 10000;
     const maxWeight = (24.9 * (height * height)) / 10000;
-    //convert to kilograms
-
     return [minWeight, maxWeight];
   };
 
@@ -254,7 +255,7 @@ export default function Home() {
                           <input
                             className={"container font-interSemibold text-heading-m text-gunmetal outline-none placeholder:text-dark-electric-blue"}
                             placeholder={"0" as string}
-                            {...register(input.id, { valueAsNumber: true })}
+                            {...register(input.id as "unit" | "metricGroup.height" | "metricGroup.weight" | "imperialGroup.feet" | "imperialGroup.inches" | "imperialGroup.stone" | "imperialGroup.pounds", { valueAsNumber: true })}
                             type="number"
                             id={input.id}
                             name={input.id}
@@ -277,7 +278,7 @@ export default function Home() {
                           <input
                             className={"container font-interSemibold text-heading-m text-gunmetal outline-none placeholder:text-dark-electric-blue"}
                             placeholder={"0" as string}
-                            {...register(input.id, { valueAsNumber: true })}
+                            {...register(input.id as "unit" | "metricGroup.height" | "metricGroup.weight" | "imperialGroup.feet" | "imperialGroup.inches" | "imperialGroup.stone" | "imperialGroup.pounds", { valueAsNumber: true })}
                             type="number"
                             id={input.id}
                             name={input.id}
@@ -297,7 +298,7 @@ export default function Home() {
                           <input
                             className={"container font-interSemibold text-heading-m text-gunmetal outline-none placeholder:text-dark-electric-blue"}
                             placeholder={"0" as string}
-                            {...register(input.id, { valueAsNumber: true })}
+                            {...register(input.id as "unit" | "metricGroup.height" | "metricGroup.weight" | "imperialGroup.feet" | "imperialGroup.inches" | "imperialGroup.stone" | "imperialGroup.pounds", { valueAsNumber: true })}
                             type="number"
                             id={input.id}
                             name={input.id}
@@ -315,7 +316,7 @@ export default function Home() {
                   <div className={"flex items-center gap-x-6"}>
                     <div className={"w-full"}>
                       <p className={"font-interSemibold text-body-m"}>Your BMI is...</p>
-                      <h2 className={"font-interSemibold text-heading-xl"}>{bmi}</h2>
+                      <h2 className={"font-interSemibold text-heading-xl"}>{bmi.toFixed(1)}</h2>
                     </div>
                     <p className={"w-full font-interRegular text-body-s"}>
                       Your BMI suggests you’re a healthy weight. Your ideal weight is between{" "}
