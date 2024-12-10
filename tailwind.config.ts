@@ -8,11 +8,15 @@ export default {
         "4.5": "1.125rem",
         "11.25": "2.813rem",
       },
+      boxShadow: {
+        form: "16px 32px 56px rgba(143, 174, 207, 0.25)",
+      },
       backgroundImage: {
         "custom-gradient": "linear-gradient(290.1deg, #D6E6FE 0%, rgba(214, 252, 254, 0) 100%)",
       },
       borderRadius: {
         custom: "16px 999px 999px 16px",
+        hero: "0 0 35px 35px",
       },
       screens: {
         sm: "375px",
