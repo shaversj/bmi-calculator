@@ -13,3 +13,18 @@ input::-webkit-inner-spin-button {
 input[type=number] {
     -moz-appearance: textfield;
 }
+
+#benefits {
+    position: relative;
+    border-radius: 35px;
+}
+
+#benefits::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(290.1deg, #D6E6FE 0%, rgba(214, 252, 254, 0) 100%);
+    opacity: 0.25;
+    border-radius: 35px;
+    z-index: -1;
+}

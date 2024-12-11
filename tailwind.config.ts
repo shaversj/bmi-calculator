@@ -10,9 +10,11 @@ export default {
       },
       boxShadow: {
         form: "16px 32px 56px rgba(143, 174, 207, 0.25)",
+        activities: "16px 32px 56px rgba(143, 174, 207, 0.25)",
       },
       backgroundImage: {
         "custom-gradient": "linear-gradient(290.1deg, #D6E6FE 0%, rgba(214, 252, 254, 0) 100%)",
+        "benefits-gradient": "linear-gradient(290.1deg, #D6E6FE 0%, rgba(214, 252, 254, 0) 100%)",
       },
       borderRadius: {
         custom: "16px 999px 999px 16px",
@@ -25,6 +27,7 @@ export default {
       },
       colors: {
         blue: "#345FF6",
+        "light-blue": "#fcfeff",
         gunmetal: "#253347",
         "dark-electric-blue": "#5E6E85",
         "pure-white": "#FFFFFF",
