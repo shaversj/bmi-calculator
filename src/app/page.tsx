@@ -35,8 +35,7 @@ const schema = z
         });
       }
     } else if (data.unit === "imperial") {
-      console.log("imperial soldier");
-      if (!data.imperialGroup || (!data.imperialGroup.feet && !data.imperialGroup.inches) || (!data.imperialGroup.stone && !data.imperialGroup.pounds)) {
+      if (!data.imperialGroup || !data.imperialGroup.feet || !data.imperialGroup.inches || !data.imperialGroup.stone || !data.imperialGroup.pounds) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["imperialGroup"],
@@ -45,6 +44,27 @@ const schema = z
       }
     }
   });
+
+interface Weight {
+  metric: {
+    min: {
+      pounds: number;
+    };
+    max: {
+      pounds: number;
+    };
+  };
+  imperial: {
+    min: {
+      stone: number;
+      pounds: number;
+    };
+    max: {
+      stone: number;
+      pounds: number;
+    };
+  };
+}
 
 export default function Home() {
   const {
@@ -55,20 +75,63 @@ export default function Home() {
   } = useForm({ resolver: zodResolver(schema), defaultValues: { unit: "metric", metricGroup: { height: undefined, weight: undefined }, imperialGroup: { feet: undefined, inches: undefined, stone: undefined, pounds: undefined } } });
 
   const [bmi, setBmi] = useState(0);
-  const [minWeight, setMinWeight] = useState(0);
-  const [maxWeight, setMaxWeight] = useState(0);
+  const [weight, setWeight] = useState<Weight>({
+    metric: {
+      min: {
+        pounds: 0,
+      },
+      max: {
+        pounds: 0,
+      },
+    },
+    imperial: {
+      min: {
+        stone: 0,
+        pounds: 0,
+      },
+      max: {
+        stone: 0,
+        pounds: 0,
+      },
+    },
+  });
   const [selectedUnit, setSelectedUnit] = useState<"metric" | "imperial" | undefined>(undefined);
 
   const onSubmit = (data: any) => {
-    const heightInInches = data.imperialGroup.feet * 12 + data.imperialGroup.inches;
-    const weightInPounds = data.imperialGroup.stone * 14 + data.imperialGroup.pounds;
+    const metricHeightInCM = data.metricGroup.height;
+    const metricWeightInKG = data.metricGroup.weight;
 
-    const bmi = data.unit === "metric" ? calculateBMI(data.metricGroup.weight, data.metricGroup.height) : calculateImperialBMI(weightInPounds, heightInInches);
-    const [minWeight, maxWeight] = data.unit === "metric" ? calculateIdealWeight(data.metricGroup.weight, data.metricGroup.height) : calculateIdealWeight(weightInPounds, heightInInches);
+    const imperialHeightInInches = data.imperialGroup.feet * 12 + data.imperialGroup.inches;
+    const imperialWeightInPounds = data.imperialGroup.stone * 14 + data.imperialGroup.pounds;
+
+    const bmi = data.unit === "metric" ? calculateBMI(metricWeightInKG, metricHeightInCM) : calculateImperialBMI(imperialWeightInPounds, imperialHeightInInches);
+    const [minWeight, maxWeight] = data.unit === "metric" ? calculateMetricWeightRange(metricHeightInCM) : calculateImperialWeightRange(imperialHeightInInches);
+
+    const [minStone, minPounds] = convertWeightToImperial(minWeight);
+    const [maxStone, maxPounds] = convertWeightToImperial(maxWeight);
+
+    setWeight({
+      metric: {
+        min: {
+          pounds: minWeight,
+        },
+        max: {
+          pounds: maxWeight,
+        },
+      },
+      imperial: {
+        min: {
+          stone: minStone,
+          pounds: minPounds,
+        },
+        max: {
+          stone: maxStone,
+          pounds: maxPounds,
+        },
+      },
+    });
 
     setBmi(bmi);
-    setMinWeight(Math.round(minWeight * 10) / 10);
-    setMaxWeight(Math.round(maxWeight * 10) / 10);
   };
 
   const calculateImperialBMI = (weight: number, height: number) => {
@@ -81,10 +144,22 @@ export default function Home() {
     return parseFloat(bmi.toFixed(1));
   };
 
-  const calculateIdealWeight = (weight: number, height: number) => {
+  const calculateMetricWeightRange = (height: number) => {
     const minWeight = (18.5 * (height * height)) / 10000;
     const maxWeight = (24.9 * (height * height)) / 10000;
     return [minWeight, maxWeight];
+  };
+
+  const convertWeightToImperial = (weight: number) => {
+    const stone = Math.floor(weight / 14);
+    const pounds = stone > 0 ? weight - stone * 14 : 0;
+    return [stone, pounds];
+  };
+
+  const calculateImperialWeightRange = (height: number) => {
+    const minWeight = (18.5 * (height * height)) / 703;
+    const maxWeight = (24.9 * (height * height)) / 703;
+    return [Math.round(minWeight * 10) / 10, Math.round(maxWeight * 10) / 10];
   };
 
   const fieldValues = useWatch({
@@ -330,9 +405,9 @@ export default function Home() {
                     <p className={"w-full pt-6 font-interRegular text-body-s md:pt-0"}>
                       Your BMI suggests you’re a healthy weight. Your ideal weight is between{" "}
                       <span className={"font-interSemibold"}>
-                        {minWeight}
-                        {selectedUnit === "metric" ? "kgs" : "lbs"} - {maxWeight}
-                        {selectedUnit === "metric" ? "kgs" : "lbs"}.
+                        {selectedUnit === "metric"
+                          ? `${weight.metric.min.pounds.toFixed(1)}kgs - ${weight.metric.max.pounds.toFixed(1)}kgs.`
+                          : `${weight.imperial.min.stone}st ${Math.floor(weight.imperial.min.pounds).toFixed(0)}lbs - ${weight.imperial.max.stone}st ${Math.floor(weight.imperial.max.pounds).toFixed(0)}lbs.`}
                       </span>
                     </p>
                   </div>
