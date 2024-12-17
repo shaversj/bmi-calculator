@@ -58,3 +58,5 @@ export interface WeightRange {
     };
   };
 }
+
+export type UnitType = "metric" | "imperial" | undefined;
