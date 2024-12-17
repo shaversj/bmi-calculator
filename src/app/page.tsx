@@ -12,6 +12,7 @@ import BmiFormContainer from "@/app/components/BmiFormContainer";
 import BmiForm from "@/app/components/BmiForm";
 import BmiHeader from "@/app/components/BmiHeader";
 import BmiCalculatorSection from "@/app/components/BmiCalculatorSection";
+import { calculateBMI, calculateImperialBMI, calculateImperialWeightRange, calculateMetricWeightRange, convertWeightToImperial } from "@/utils/bmiUtils";
 
 const initialWeight = {
   metric: { min: { pounds: 0 }, max: { pounds: 0 } },
@@ -22,7 +23,6 @@ export default function Home() {
   const [bmi, setBmi] = useState<number>(0);
   const [weight, setWeight] = useState<WeightRange>(initialWeight);
   const [selectedUnit, setSelectedUnit] = useState<UnitType>(undefined);
-
   const { register, control, handleSubmit, formState: { isValid }, } = useForm({
     resolver: zodResolver(bmiSchema),
     defaultValues: {
@@ -35,50 +35,17 @@ export default function Home() {
   const onSubmit = (data: any) => {
     const metricHeightInCM = data.metricGroup.height;
     const metricWeightInKG = data.metricGroup.weight;
-
     const imperialHeightInInches = data.imperialGroup.feet * 12 + data.imperialGroup.inches;
     const imperialWeightInPounds = data.imperialGroup.stone * 14 + data.imperialGroup.pounds;
-
     const bmi = data.unit === "metric" ? calculateBMI(metricWeightInKG, metricHeightInCM) : calculateImperialBMI(imperialWeightInPounds, imperialHeightInInches);
     const [minWeight, maxWeight] = data.unit === "metric" ? calculateMetricWeightRange(metricHeightInCM) : calculateImperialWeightRange(imperialHeightInInches);
-
     const [minStone, minPounds] = convertWeightToImperial(minWeight);
     const [maxStone, maxPounds] = convertWeightToImperial(maxWeight);
-
     setWeight({
       metric: { min: { pounds: minWeight }, max: { pounds: maxWeight } },
       imperial: { min: { stone: minStone, pounds: minPounds }, max: { stone: maxStone, pounds: maxPounds } },
     });
-
     setBmi(bmi);
-  };
-
-  const calculateImperialBMI = (weight: number, height: number) => {
-    const bmi = (weight * 703) / (height * height);
-    return parseFloat(bmi.toFixed(1));
-  };
-
-  const calculateBMI = (weight: number, height: number) => {
-    const bmi = (weight / (height * height)) * 10000;
-    return parseFloat(bmi.toFixed(1));
-  };
-
-  const calculateMetricWeightRange = (height: number) => {
-    const minWeight = (18.5 * (height * height)) / 10000;
-    const maxWeight = (24.9 * (height * height)) / 10000;
-    return [minWeight, maxWeight];
-  };
-
-  const convertWeightToImperial = (weight: number) => {
-    const stone = Math.floor(weight / 14);
-    const pounds = stone > 0 ? weight - stone * 14 : 0;
-    return [stone, pounds];
-  };
-
-  const calculateImperialWeightRange = (height: number) => {
-    const minWeight = (18.5 * (height * height)) / 703;
-    const maxWeight = (24.9 * (height * height)) / 703;
-    return [Math.round(minWeight * 10) / 10, Math.round(maxWeight * 10) / 10];
   };
 
   const fieldValues = useWatch({
