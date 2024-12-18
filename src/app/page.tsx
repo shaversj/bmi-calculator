@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { SubmitHandler, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { bmiSchema, UnitType, WeightRange } from "@/app/types/types";
+import { BmiSchema, bmiSchema, UnitType, WeightRange } from "@/app/types/types";
 import BenefitsSection from "@/app/components/BenefitsSection";
 import LimitationSection from "@/app/components/LimitationSection";
 import BmiExplanationSection from "@/app/components/BmiExplanationSection";
@@ -26,19 +26,19 @@ export default function Home() {
   const { register, control, handleSubmit, formState: { isValid }, } = useForm({
     resolver: zodResolver(bmiSchema),
     defaultValues: {
-      unit: "metric",
+      unit: "metric" as const,
       metricGroup: { height: undefined, weight: undefined },
       imperialGroup: { feet: undefined, inches: undefined, stone: undefined, pounds: undefined },
     },
   }); // prettier-ignore
 
-  const onSubmit = (data: any) => {
-    const metricHeightInCM = data.metricGroup.height;
-    const metricWeightInKG = data.metricGroup.weight;
-    const imperialHeightInInches = data.imperialGroup.feet * 12 + data.imperialGroup.inches;
-    const imperialWeightInPounds = data.imperialGroup.stone * 14 + data.imperialGroup.pounds;
-    const bmi = data.unit === "metric" ? calculateBMI(metricWeightInKG, metricHeightInCM) : calculateImperialBMI(imperialWeightInPounds, imperialHeightInInches);
-    const [minWeight, maxWeight] = data.unit === "metric" ? calculateMetricWeightRange(metricHeightInCM) : calculateImperialWeightRange(imperialHeightInInches);
+  const onSubmit: SubmitHandler<BmiSchema> = (data) => {
+    const metricHeightInCM = data.metricGroup?.height;
+    const metricWeightInKG = data.metricGroup?.weight;
+    const imperialHeightInInches = (data.imperialGroup?.feet ?? 0) * 12 + (data.imperialGroup?.inches ?? 0);
+    const imperialWeightInPounds = (data.imperialGroup?.stone ?? 0) * 14 + (data.imperialGroup?.pounds ?? 0);
+    const bmi = data.unit === "metric" ? calculateBMI(metricWeightInKG ?? 0, metricHeightInCM ?? 0) : calculateImperialBMI(imperialWeightInPounds, imperialHeightInInches);
+    const [minWeight, maxWeight] = data.unit === "metric" ? calculateMetricWeightRange(metricHeightInCM ?? 0) : calculateImperialWeightRange(imperialHeightInInches);
     const [minStone, minPounds] = convertWeightToImperial(minWeight);
     const [maxStone, maxPounds] = convertWeightToImperial(maxWeight);
     setWeight({
@@ -54,14 +54,14 @@ export default function Home() {
   });
 
   useEffect(() => {
-    const [unit, height, weight, feet, inches, stone, pounds] = fieldValues;
+    const [unit, , , , , ,] = fieldValues;
     if (unit === "metric" || unit === "imperial") {
       setSelectedUnit(unit);
     }
     if (isValid) {
       handleSubmit(onSubmit)();
     }
-  }, [isValid, fieldValues]);
+  }, [isValid, fieldValues, handleSubmit]);
 
   return (
     <div>

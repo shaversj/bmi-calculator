@@ -38,6 +38,8 @@ export const bmiSchema = z
     }
   });
 
+export type BmiSchema = z.infer<typeof bmiSchema>;
+
 export interface WeightRange {
   metric: {
     min: {

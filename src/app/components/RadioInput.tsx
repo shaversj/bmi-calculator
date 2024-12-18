@@ -4,7 +4,7 @@ import { UnitType } from "@/app/types/types";
 interface RadioInputProps {
   id: string;
   label: string;
-  register: UseFormRegister<any>;
+  register: UseFormRegister<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   selectedUnit: UnitType;
 }
 

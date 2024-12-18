@@ -4,7 +4,7 @@ interface InputFieldProps {
   id: string;
   label: string;
   unit: string;
-  register: UseFormRegister<any>;
+  register: UseFormRegister<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export default function InputField({ id, label, unit, register }: InputFieldProps) {
@@ -14,14 +14,7 @@ export default function InputField({ id, label, unit, register }: InputFieldProp
         {label}
       </label>
       <div className={"flex gap-x-6 rounded-lg border border-gunmetal px-6 py-5 hover:border-blue"}>
-        <input
-          className={"container font-interSemibold text-heading-m text-gunmetal outline-none placeholder:text-dark-electric-blue"}
-          placeholder={"0" as string}
-          {...register(id as "unit" | "metricGroup.height" | "metricGroup.weight" | "imperialGroup.feet" | "imperialGroup.inches" | "imperialGroup.stone" | "imperialGroup.pounds", { valueAsNumber: true })}
-          type="number"
-          id={id}
-          name={id}
-        />
+        <input className={"container font-interSemibold text-heading-m text-gunmetal outline-none placeholder:text-dark-electric-blue"} placeholder={"0" as string} {...register(id as "unit" | "metricGroup.height" | "metricGroup.weight" | "imperialGroup.feet" | "imperialGroup.inches" | "imperialGroup.stone" | "imperialGroup.pounds", { valueAsNumber: true })} type="number" id={id} name={id} />
         <span className={"font-interSemibold text-heading-m text-blue"}>{unit}</span>
       </div>
     </div>

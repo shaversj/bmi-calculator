@@ -7,7 +7,7 @@ import { UnitType, WeightRange } from "@/app/types/types";
 import { UseFormRegister } from "react-hook-form";
 
 interface FormProps {
-  register: UseFormRegister<any>;
+  register: UseFormRegister<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   isValid: boolean;
   bmi: number;
   selectedUnit: UnitType;
