@@ -9,7 +9,7 @@ const interRegular = localFont({
 });
 
 const interSemibold = localFont({
-  src: "./fonts/Inter-Semibold.ttf",
+  src: "./fonts/Inter-SemiBold.ttf",
   variable: "--font-inter-semibold",
   weight: "600",
 });
